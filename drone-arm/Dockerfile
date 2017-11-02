@@ -43,5 +43,4 @@ COPY --from=build-env /drone-server /drone-server
 
 VOLUME ["/var/lib/drone"]
 
-ENTRYPOINT ["/bin/sh"]
 CMD ["/drone-server"]
