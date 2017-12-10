@@ -3,7 +3,7 @@ FROM kunde21/go-arm:latest AS build-env
 ENV GOPATH /gopath
 ENV PATH $PATH:/gopath/bin
 ENV GODEBUG netdns=go
-ENV GITEA_VERSION v1.2.2
+ENV GITEA_VERSION v1.3.1
 ENV TAGS bindata sqlite 
 
 RUN apk update && apk upgrade && \
@@ -32,7 +32,7 @@ RUN go get -u github.com/jteeuwen/go-bindata/... && \
 	/gitea -h || echo "done"
 
 
-FROM kunde21/alpine-armhf:latest
+FROM alpine:3.7
 
 EXPOSE 22 3000
 

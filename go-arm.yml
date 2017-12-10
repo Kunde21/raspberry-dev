@@ -1,0 +1,14 @@
+image: kunde21/go-arm:latest
+manifests:
+  - image: kunde21/go-arm:arm64
+    platform:
+      architecture: arm64
+      os: linux
+  - image: kunde21/go-arm:arm
+    platform:
+      architecture: armhf
+      os: linux
+  - image: kunde21/go-arm:amd64
+    platform:
+      architecture: amd64
+      os: linux
