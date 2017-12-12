@@ -2,7 +2,7 @@ FROM kunde21/go-arm:latest AS build-env
 
 ENV GOPATH /gopath
 ENV GODEBUG netdns=go
-ENV DRONE_VERSION v0.8.1
+ENV DRONE_VERSION v0.8.2
 
 RUN apk update && apk upgrade && \
 	apk add --no-cache git \
@@ -27,7 +27,7 @@ RUN go get -v github.com/drone/drone-ui/dist && go get -u -t github.com/jteeuwen
 	go build -o /drone-server github.com/drone/drone/cmd/drone-server 
 
 
-FROM kunde21/alpine-armhf:latest
+FROM alpine:3.7
 
 EXPOSE 80 8000 443
 
