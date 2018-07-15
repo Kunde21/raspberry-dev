@@ -2,7 +2,7 @@ FROM kunde21/go-arm:latest AS build-env
 
 ENV GOPATH /gopath
 ENV GODEBUG netdns=go
-ENV DRONE_VERSION v0.8.3
+ENV DRONE_VERSION v0.8.4
 
 RUN apk update && apk upgrade && \
 	apk add --no-cache git \
