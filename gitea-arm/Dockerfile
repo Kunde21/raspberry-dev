@@ -1,6 +1,6 @@
-FROM kunde21/go-arm:latest AS build-env
+FROM golang:1.11-alpine AS build-env
 
-ARG GITEA_VERSION=latest
+ARG GITEA_VERSION=v1.6.2
 
 ENV GOPATH /gopath
 ENV PATH $PATH:/gopath/bin
@@ -34,7 +34,7 @@ RUN if [ "$GITEA_VERSION" = "latest" ]; then GITEA_VERSION=$(curl --silent "http
 	/gitea -h || echo "done"
 
 
-FROM alpine:3.7
+FROM alpine:3.8
 
 EXPOSE 22 3000
 
