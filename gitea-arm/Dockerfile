@@ -1,9 +1,10 @@
 FROM golang:1.11-alpine AS build-env
 
+ARG GITEA_VERSION=v1.6.2
+
 ENV GOPATH /gopath
 ENV PATH $PATH:/gopath/bin
 ENV GODEBUG netdns=go
-ENV GITEA_VERSION v1.6.2
 ENV TAGS bindata sqlite 
 
 RUN apk update && apk upgrade && \
@@ -22,14 +23,15 @@ RUN apk update && apk upgrade && \
 		sqlite-libs \
 		wget ;
 
-RUN go get -u github.com/jteeuwen/go-bindata/... && \
+RUN if [ "$GITEA_VERSION" = "latest" ]; then GITEA_VERSION=$(curl --silent "https://api.github.com/repos/go-gitea/gitea/releases/latest" |  grep '"tag_name":' |  sed -E 's/.*"([^"]+)".*/\1/'); fi && \
+	go get -u github.com/jteeuwen/go-bindata/... && \
 	cd /gopath/src && mkdir -p code.gitea.io/gitea && cd code.gitea.io/gitea && \
 	wget https://github.com/go-gitea/gitea/archive/$GITEA_VERSION.tar.gz -O ../gitea.tar.gz && \
 	tar xf ../gitea.tar.gz --strip-components=1 && \
 	go generate ./... && \
 	go build -v -o /gitea -tags "$TAGS" -ldflags=`-s -w -X "main.Version=$GITEA_VERSION" -X "main.Tags=$TAGS"` && \
 	mv docker /docker && \
-	/gitea -h || echo "done"
+	/gitea -h && echo "done"
 
 
 FROM alpine:3.8
