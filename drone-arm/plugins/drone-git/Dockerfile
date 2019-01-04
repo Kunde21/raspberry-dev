@@ -1,4 +1,4 @@
-FROM kunde21/go-arm:latest AS build-env
+FROM golang:1.11-alpine AS build-env
 
 ENV GOPATH /gopath
 ENV GODEBUG netdns=go
@@ -10,7 +10,7 @@ RUN apk update && apk upgrade && \
 
 RUN go get -v -tags netgo github.com/drone-plugins/drone-git 
 
-FROM kunde21/alpine-arm:latest
+FROM alpine:3.8
 
 MAINTAINER Chad Kunde <Kunde21@gmail.com>
 
