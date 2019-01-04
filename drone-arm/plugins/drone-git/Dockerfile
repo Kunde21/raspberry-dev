@@ -10,7 +10,7 @@ RUN apk update && apk upgrade && \
 
 RUN go get -v -tags netgo github.com/drone-plugins/drone-git 
 
-FROM alpine:3.8
+FROM registry.kc.csk/kunde21/cluster-build:v0.0.3
 
 MAINTAINER Chad Kunde <Kunde21@gmail.com>
 
