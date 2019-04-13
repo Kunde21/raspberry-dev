@@ -1,11 +1,13 @@
-FROM golang:1.11-alpine AS build-env
+FROM golang:1.12-alpine AS build-env
 
-ARG GITEA_VERSION=v1.6.2
+ARG GITEA_VERSION=v1.7.6
 
 ENV GOPATH /gopath
 ENV PATH $PATH:/gopath/bin
 ENV GODEBUG netdns=go
 ENV TAGS bindata sqlite 
+
+WORKDIR /gopath/src/code.gitea.io/gitea
 
 RUN apk update && apk upgrade && \
 	apk add --no-cache git \
@@ -22,8 +24,6 @@ RUN apk update && apk upgrade && \
 		sqlite \
 		sqlite-libs \
 		wget ;
-
-WORKDIR /gopath/src/code.gitea.io/gitea
 
 RUN if [ "$GITEA_VERSION" = "latest" ]; then GITEA_VERSION=$(curl --silent "https://api.github.com/repos/go-gitea/gitea/releases/latest" |  grep '"tag_name":' |  sed -E 's/.*"([^"]+)".*/\1/'); fi && \
 	go get -u github.com/jteeuwen/go-bindata/... && \
@@ -43,7 +43,7 @@ RUN go build -v -o /gitea -tags "$TAGS" -ldflags="-s -w -X 'main.Version=$GITEA_
 RUN mv docker /docker &&  /gitea -h
 
 
-FROM alpine:3.8
+FROM alpine:3.9
 
 EXPOSE 22 3000
 
@@ -54,6 +54,7 @@ RUN apk --no-cache add \
 	bash \
 	git \
 	linux-pam \
+	gettext \
 	s6 \
 	curl \
 	openssh \
@@ -70,8 +71,8 @@ RUN apk --no-cache add \
 	git && \
 	echo "git:$(date +%s | sha256sum | base64 | head -c 32)" | chpasswd
 
-ENV USER git
-ENV GITEA_CUSTOM /data/gitea
+ENV USER=git
+ENV GITEA_CUSTOM=/data/gitea GITEA_WORK_DIR=/data/gitea
 ENV GODEBUG=netdns=go
 
 VOLUME ["/data"]
