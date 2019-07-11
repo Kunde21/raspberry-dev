@@ -1,13 +1,14 @@
-FROM golang:1.12-alpine AS build-env
+FROM golang:1.12-alpine3.10 AS build-env
 
-ARG GITEA_VERSION=v1.7.6
+ARG GITEA_VERSION=latest
+ARG GOPROXY=https://proxy.golang.org
 
 ENV GOPATH /gopath
 ENV PATH $PATH:/gopath/bin
 ENV GODEBUG netdns=go
-ENV TAGS bindata sqlite 
+ENV TAGS bindata sqlite sqlite_unlock_notify
 
-WORKDIR /gopath/src/code.gitea.io/gitea
+WORKDIR /build
 
 RUN apk update && apk upgrade && \
 	apk add --no-cache git \
@@ -43,7 +44,7 @@ RUN go build -v -o /gitea -tags "$TAGS" -ldflags="-s -w -X 'main.Version=$GITEA_
 RUN mv docker /docker &&  /gitea -h
 
 
-FROM alpine:3.9
+FROM alpine:3.10
 
 EXPOSE 22 3000
 
