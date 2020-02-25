@@ -1,0 +1,13 @@
+--- Makefile	2020-02-25 22:23:13.675533475 +0800
++++ Makefile	2020-02-25 22:23:20.035522135 +0800
+@@ -29,7 +29,9 @@
+ 
+ MAKE_VERSION := $(shell $(MAKE) -v | head -n 1)
+ 
+-ifneq ($(DRONE_TAG),)
++ifneq ($(VERSION),)
++	GITEA_VERSION ?= $(VERSION)
++else ifneq ($(DRONE_TAG),)
+ 	VERSION ?= $(subst v,,$(DRONE_TAG))
+ 	GITEA_VERSION ?= $(VERSION)
+ else
